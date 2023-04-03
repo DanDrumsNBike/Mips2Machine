@@ -12,20 +12,29 @@ def codechecker(code): # make sure code is an actual valid line of code
     check = code.upper()
     check = check.replace(",","")
     check = check.split(" ")
-    validlist = ['ADD', 'ADDI', 'ADDIU', 'ADDU', 'AND', 'ANDI', 'LUI', 'NOR', 'OR', 'ORI', 'SLT', 'SLTI', 'SLTIU', 'SLTU', 'SUB', 'SUBU', 'XOR', 'XORI',
-                 'SLL', 'SLLV', 'SRA', 'SRAV', 'SRL', 'SRLV', 'DIV', 'DIVU', 'MFHI', 'MFLO', 'MTHI', 'MTLO', 'MULT', 'MULTU', 'BEQ', 'BGEZ', 'BGEZAL',
-                   'BGTZ', 'BLEZ', 'BREAK', 'J', 'JAL', 'JALR', 'JR', 'MFC0', 'LB', 'LBU', 'LH', 'LHU', 'LW', 'SB', 'SH', 'SW','$0', '$1', '$2', '$3', '$4', '$5', '$6', '$7', '$8', '$9', '$10', '$11', '$12', '$13', '$14', '$15', '$16', '$17', '$18', '$19', '$20',
+    # All instructions taken from mips Reference Data sheet
+    # sheet can be found here: https://inst.eecs.berkeley.edu/~cs61c/resources/MIPS_help.html
+    # ignores pseudo instructions like move or load immediate
+    Rtype = ['ADD', 'ADDU', 'AND', 'JR', 'NOR', 'OR', 'SLT', 'SLTU', 'SLL', 'SRL', 'SUB', 'SUBU', 'MFHI', 'MFLO', 'MFC0', 'MULT', 'MULTU', 'SRA']
+    JType = ['J', 'JAL']
+    IType = ['BEQ', 'BNE', 'ADDI', 'ADDIU', 'SLTI', 'SLTIU', 'ANDI', 'ORI', 'XORI', 'LUI']
+    # separate I and loading I type due to difference in immediate placement
+    LItype = ['LB', 'LH', 'LW', 'LBU', 'LHU', 'SB', 'SH', 'SW']
+    immtype = ""
+    validreg = ['$0', '$1', '$2', '$3', '$4', '$5', '$6', '$7', '$8', '$9', '$10', '$11', '$12', '$13', '$14', '$15', '$16', '$17', '$18', '$19', '$20',
                   '$21', '$22', '$23', '$24', '$25', '$26', '$27', '$28', '$29', '$30', '$31', '$ZERO', '$AT', '$V0', '$V1', '$A0', '$A1', '$A2', '$A3',
                     '$T0', '$T1', '$T2', '$T3', '$T4', '$T5', '$T6', '$T7', '$S0', '$S1', '$S2', '$S3', '$S4', '$S5', '$S6', '$S7', '$T8', '$T9', '$K0',
                       '$K1', '$GP', '$SP', '$FP', '$RA']
-    for x in check:
-        print(x)
-        if x not in validlist:
-            if x.isnumeric() == False:
-                print(False)
-                return(False)
-    print("correct")
-    return
+    match check[0]:
+        case in Rtype:
+            immtype = ""
+        case in Jtype:
+            immtype = "JUMP"
+        case in Itype:
+            immtype = "IMM"
+        case in LItype:
+            immtype = "LIMM"
+    
 
 def listmaker():
     lst = []
